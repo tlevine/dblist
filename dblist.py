@@ -6,13 +6,20 @@ import sqlite3
 #from pickle import dumps,loads
 from json import dumps,loads
 
+#Check types
+# if type(index)!=type(42):
+#   raise TypeError('list indices must be integers, not ??')
+# if type(start)!=type(42) or type(end)!=type(42):
+#   raise TypeError('slice indices must be integers or None or have an __index__ method')
+
 class dblist:
   #List methods
-  def append(self):
+  def append(self,commit=True):
     "Add a row"
     pickle=dumps(row)
     self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?);'%self._table_name,[pickle])
-    self.connection.commit()
+    if commit:
+      self.commit()
 
 
   def pop(self,commit=False):
@@ -38,7 +45,7 @@ class dblist:
   def sort(self):
 
   #Special list methods
-  def __init__(self,table_name="_stack",db_name="stack.db",base_stack=[]):
+  def __init__(self,base_stack=[],table_name="_stack",db_name="stack.db",commit=True):
     self._table_name=table_name
     self.connection=sqlite3.connect(db_name)
     self.cursor=self.connection.cursor()
@@ -55,15 +62,17 @@ class dblist:
         );
       """%self._table_name)
       self._setstack(base_stack)
-      self.connection.commit()
+      if commit:
+        self.commit()
 
-  def __del__(self):
+  def __del__(self,commit=True):
     "Delete the stack"
     self.cursor.execute('DELETE FROM `%s`'%self._table_name)
-    self.connection.commit()
+    if commit:
+      self.commit()
 
-  def __str__(self):
-  def __unicode__(self):
+# def __str__(self):
+# def __unicode__(self):
 
 
   #Unary operators
@@ -78,14 +87,33 @@ class dblist:
 
   #Item (index) operators
   def __getitem__(self,index):
-    return
-  def __setitem__(self,index):
-    return
-  def __getslice__(self,index):
-    return
+    return self.__getslice__(index,index+1)
+
+  def __setitem__(self,index,value):
+    self.__setslice__(index,index+1,[value])
+
+  def __getslice__(self,start,end):
+    self.cursor.execute("""
+      SELECT `pickle` FROM `%s`
+      WHERE pk >= ? AND pk < ? ASC;
+    """%self._table_name,[index])
+    rows=self.cursor.fetchall()
+    return [loads(row[0]) for row in rows]
+
+  def __setslice__(self,start,end,values,commit=True):
+    for value in values:
+      pickle=dumps(value)
+      self.cursor.execute("""
+        INSERT INTO `%s`(pickle) VALUES(?)
+        WHERE pk >= ? AND pk < ? ASC;
+      """, % self._table_name,[pickle,start,end])
+    if commit:
+      self.commit()
 
   #Non-list methods
   def commit(self): 
+    self.connection.commit()
+
   def tolist(self):
     self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` ASC'%self._table_name)
     thestack=[loads(row[0]) for row in self.cursor.fetchall()]
@@ -102,12 +130,6 @@ class SqliteStack():
   def _delstack(self):
 
   def _setstack(self,newstack):
-    "Replace the stack table with a new one. This is slow."
-    self._delstack()
-    for state in newstack:
-      pickle=dumps(state)
-      self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?)' % self._table_name,[pickle])
-    self.connection.commit()
 
   stack=property(_getstack,_setstack,_delstack,"The stack list")
 
