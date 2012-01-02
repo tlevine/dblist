@@ -9,6 +9,25 @@ from json import dumps,loads
 class dblist:
   #List methods
   def append(self):
+    "Add a row"
+    pickle=dumps(row)
+    self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?);'%self._table_name,[pickle])
+    self.connection.commit()
+
+
+  def pop(self,commit=False):
+    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` DESC LIMIT 1'%self._table_name)
+    rows=self.cursor.fetchall()
+
+    if len(rows)==0:
+      raise IndexError("pop from empty list")
+    else:
+      state=loads(rows[0][0])
+      self.cursor.execute('DELETE FROM `%s` WHERE `pk`=(SELECT max(pk) from `%s`);'%(self._table_name,self._table_name))
+      if commit:
+        self.connection.commit()
+      return out
+
   def count(self):
   def extend(self):
   def index(self):
@@ -46,6 +65,17 @@ class dblist:
   def __str__(self):
   def __unicode__(self):
 
+
+  #Unary operators
+  def __len__(self):
+    self.cursor.execute('select count(*) from %s'%self._table_name)
+    rows=self.cursor.fetchall()
+    if len(rows)==0:
+      count=0
+    else:
+      count=rows[0][0]
+    return count
+
   #Item (index) operators
   def __getitem__(self,index):
     return
@@ -82,59 +112,6 @@ class SqliteStack():
   stack=property(_getstack,_setstack,_delstack,"The stack list")
 
   def len(self):
-    self.cursor.execute('select count(*) from %s'%self._table_name)
-    rows=self.cursor.fetchall()
-    if len(rows)==0:
-      count=0
-    else:
-      count=rows[0][0]
-    return count
-
-  def first(self):
-    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` ASC LIMIT 1'%self._table_name)
-    rows=self.cursor.fetchall()
-    if len(rows)==0:
-      raise self.EmptyStack
-    else:
-      state=loads(rows[0][0])
-      return state
-
-  def last(self):
-    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` DESC LIMIT 1'%self._table_name)
-    rows=self.cursor.fetchall()
-    if len(rows)==0:
-      raise self.EmptyStack
-    else:
-      state=loads(rows[0][0])
-      return state
-
-  def head(self):
-    stack=self.stack
-    if len(stack)==0:
-      return []
-    else:
-      return stack[0:-1]
-
-  def tail(self):
-    stack=self.stack
-    if len(stack)==0:
-      return []
-    else:
-      return stack[1:len(stack)]
-
-  def append(self,row):
-    "Add a row"
-    pickle=dumps(row)
-    self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?);'%self._table_name,[pickle])
-    self.connection.commit()
-
-  def pop(self,commit=False):
-    out=self.last()
-    #Delete the row
-    self.cursor.execute('DELETE FROM `%s` WHERE `pk`=(SELECT max(pk) from `%s`);'%(self._table_name,self._table_name))
-    if commit:
-      self.connection.commit()
-    return out
 
 class SWStack():
   "Stack backed by the ScraperWiki datastore"
