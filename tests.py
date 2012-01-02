@@ -48,22 +48,22 @@ class TestDbList(unittest.TestCase):
     foo,bar=compare(lambda baz:baz.sort(),[38,5,2,10,3])
     self.assertEqual(foo,bar)
 
-  #Special list methods
-  def test___init__(self):
-  def test___del__(self):
-  def test___str__(self):
-  def test___unicode__(self):
+# #Special list methods
+# def test___init__(self):
+# def test___del__(self):
+# def test___str__(self):
+# def test___unicode__(self):
 
-  #Item (index) operators
-  def test___getitem__(self,index):
-    return
-  def test___setitem__(self,index):
-    return
-  def test___getslice__(self,index):
-    return
+# #Item (index) operators
+# def test___getitem__(self,index):
+#   return
+# def test___setitem__(self,index):
+#   return
+# def test___getslice__(self,index):
+#   return
 
-  #Non-list methods
-  def test_commit(self): 
+# #Non-list methods
+# def test_commit(self): 
 
 
 if __name__ == '__main__':

@@ -22,27 +22,45 @@ class dblist:
       self.commit()
 
 
-  def pop(self,commit=False):
+  def count(self,value):
+    self.cursor.execute('SELECT count(`pickle`) FROM `%s` WHERE `pickle`=?;'%self._table_name,[dumps(value)])
+    rows=self.cursor.fetchall()
+    return rows[0][0]
+
+#  def extend(self):
+  def index(self,value):
+    self.cursor.execute('SELECT `pk` FROM `%s` WHERE `pickle`=? ORDER BY `pk` ASC LIMIT 1;'%self._table_name,[dumps(value)])
+    rows=self.cursor.fetchall()
+    return rows[0][0]
+
+#  def insert(self):
+    
+  def pop(self,index=None,commit=False):
+    #Get
     self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` DESC LIMIT 1'%self._table_name)
     rows=self.cursor.fetchall()
-
     if len(rows)==0:
       raise IndexError("pop from empty list")
     else:
       state=loads(rows[0][0])
-      self.cursor.execute('DELETE FROM `%s` WHERE `pk`=(SELECT max(pk) from `%s`);'%(self._table_name,self._table_name))
+
+      #Delete
+      if index==None:
+        self.cursor.execute('DELETE FROM `%s` WHERE `pk`=(SELECT max(pk) from `%s`);'%(self._table_name,self._table_name))
+      else:
+        self.cursor.execute('DELETE FROM `%s` WHERE `pk`=?;'%(self._table_name),[index])
+        
+      #Commit
       if commit:
         self.connection.commit()
       return out
 
-  def count(self):
-  def extend(self):
-  def index(self):
-  def insert(self):
-  def pop(self):
-  def remove(self):
-  def reverse(self):
-  def sort(self):
+  def remove(self,value):
+    pk=self.index(value)
+    self.cursor.execute('DELETE FROM `%s` WHERE `pk`=?;'%(self._table_name),[pk])
+
+# def reverse(self):
+# def sort(self):
 
   #Special list methods
   def __init__(self,base_stack=[],table_name="_stack",db_name="stack.db",commit=True):
@@ -106,7 +124,7 @@ class dblist:
       self.cursor.execute("""
         INSERT INTO `%s`(pickle) VALUES(?)
         WHERE pk >= ? AND pk < ? ASC;
-      """, % self._table_name,[pickle,start,end])
+      """ % self._table_name,[pickle,start,end])
     if commit:
       self.commit()
 
