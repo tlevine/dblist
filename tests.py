@@ -1,51 +1,42 @@
 import unittest
 from dblist import dblist
 
-def compare(func,init=[]):
-  foo=dblist(init)
-  bar=list(init)
-  for baz in (foo,bar):
-    func(baz)
-  return foo.tolist(),bar
-
 class TestDbList(unittest.TestCase):
+  def setUp(self):
+    self.list=[3,5,1]
+    self.dblist=dblist(self.list)
+    self.dblist.commit()
+
   #List methods
   def test_append(self):
-    foo,bar=compare(lambda baz:baz.append('u'))
-    self.assertEqual(foo,bar)
-    del(foo)
-    del(bar)
+    self.list.append(8)
+    self.dblist.append(8)
+    self.assertEqual(self.list.count(5),self.dblist.count(5))
     
   def test_count(self):
-    foo,bar=compare(lambda baz:baz.count(3),[3,4,3])
-    self.assertEqual(foo,bar)
-    del(foo)
-    del(bar)
+    self.assertEqual(self.list.count(5),self.dblist.count(5))
 
-  def test_extend(self):
-    foo,bar=compare(lambda baz:baz.extend([3,2]))
-    self.assertEqual(foo,bar)
-    del(foo)
-    del(bar)
+# def test_extend(self):
+#   foo,bar=compare(lambda baz:baz.extend([3,2]))
+#   self.assertEqual(foo,bar)
+#   del(foo)
+#   del(bar)
 
   def test_index(self):
-    foo,bar=compare(lambda baz:baz.index(2),[38,5,2,3])
-    self.assertEqual(foo,bar)
-    del(foo)
-    del(bar)
+    self.assertEqual(self.list.index(5),self.dblist.index(5))
 
   def test_insert(self):
    pass
 
-  def test_pop(self):
-    foo,bar=compare(lambda baz:baz.pop(2),[38,5,2,3])
-    self.assertEqual(foo,bar)
-    foo,bar=compare(lambda baz:baz.pop(),[38,5,2,3])
-    self.assertEqual(foo,bar)
+# def test_pop(self):
+#   foo,bar=compare(lambda baz:baz.pop(2),[38,5,2,3])
+#   self.assertEqual(foo,bar)
+#   foo,bar=compare(lambda baz:baz.pop(),[38,5,2,3])
+#   self.assertEqual(foo,bar)
 
-  def test_remove(self):
-    foo,bar=compare(lambda baz:baz.remove(2),[38,5,2,3])
-    self.assertEqual(foo,bar)
+# def test_remove(self):
+#   foo,bar=compare(lambda baz:baz.remove(2),[38,5,2,3])
+#   self.assertEqual(foo,bar)
 
 # def test_reverse(self):
 #   foo,bar=compare(lambda baz:baz.reverse(),[38,5,2,3])
@@ -56,7 +47,9 @@ class TestDbList(unittest.TestCase):
 #   self.assertEqual(foo,bar)
 
 # #Special list methods
-# def test___init__(self):
+  def test___init__(self):
+    self.assertEqual(self.dblist.tolist(),self.list)
+
 # def test___del__(self):
 # def test___str__(self):
 # def test___unicode__(self):

@@ -42,7 +42,7 @@ class dblist:
     if len(rows)==0:
       raise IndexError("pop from empty list")
     else:
-      state=loads(rows[0][0])
+      value=loads(rows[0][0])
 
       #Delete
       if index==None:
@@ -52,8 +52,9 @@ class dblist:
         
       #Commit
       if commit:
-        self.connection.commit()
-      return out
+        self.commit()
+
+      return value
 
   def remove(self,value):
     pk=self.index(value)
@@ -63,7 +64,8 @@ class dblist:
 # def sort(self):
 
   #Special list methods
-  def __init__(self,base_list=[],table_name="_stack",db_name="stack.db",commit=True):
+  def __init__(self,base_list=[],table_name="_dblist",db_name="dblist.db",commit=True):
+  #def __init__(self,table_name,db_name,base_list=[],commit=True):
     self._table_name=table_name
     self.connection=sqlite3.connect(db_name)
     self.cursor=self.connection.cursor()
@@ -140,6 +142,7 @@ class dblist:
   #Non-list methods
   def commit(self): 
     self.connection.commit()
+#    self.cursor.close()
 
   def tolist(self):
     self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` ASC'%self._table_name)
