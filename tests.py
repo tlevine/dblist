@@ -6,26 +6,33 @@ def compare(func,init=[]):
   bar=list(init)
   for baz in (foo,bar):
     func(baz)
-  return foo,bar
-
+  return foo.tolist(),bar
 
 class TestDbList(unittest.TestCase):
   #List methods
   def test_append(self):
     foo,bar=compare(lambda baz:baz.append('u'))
     self.assertEqual(foo,bar)
+    del(foo)
+    del(bar)
     
   def test_count(self):
     foo,bar=compare(lambda baz:baz.count(3),[3,4,3])
     self.assertEqual(foo,bar)
+    del(foo)
+    del(bar)
 
   def test_extend(self):
     foo,bar=compare(lambda baz:baz.extend([3,2]))
     self.assertEqual(foo,bar)
+    del(foo)
+    del(bar)
 
   def test_index(self):
     foo,bar=compare(lambda baz:baz.index(2),[38,5,2,3])
     self.assertEqual(foo,bar)
+    del(foo)
+    del(bar)
 
   def test_insert(self):
    pass
@@ -40,13 +47,13 @@ class TestDbList(unittest.TestCase):
     foo,bar=compare(lambda baz:baz.remove(2),[38,5,2,3])
     self.assertEqual(foo,bar)
 
-  def test_reverse(self):
-    foo,bar=compare(lambda baz:baz.reverse(),[38,5,2,3])
-    self.assertEqual(foo,bar)
+# def test_reverse(self):
+#   foo,bar=compare(lambda baz:baz.reverse(),[38,5,2,3])
+#   self.assertEqual(foo,bar)
 
-  def test_sort(self):
-    foo,bar=compare(lambda baz:baz.sort(),[38,5,2,10,3])
-    self.assertEqual(foo,bar)
+# def test_sort(self):
+#   foo,bar=compare(lambda baz:baz.sort(),[38,5,2,10,3])
+#   self.assertEqual(foo,bar)
 
 # #Special list methods
 # def test___init__(self):

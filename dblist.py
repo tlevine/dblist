@@ -14,9 +14,9 @@ from json import dumps,loads
 
 class dblist:
   #List methods
-  def append(self,commit=True):
+  def append(self,value,commit=True):
     "Add a row"
-    pickle=dumps(row)
+    pickle=dumps(value)
     self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?);'%self._table_name,[pickle])
     if commit:
       self.commit()
@@ -63,7 +63,7 @@ class dblist:
 # def sort(self):
 
   #Special list methods
-  def __init__(self,base_stack=[],table_name="_stack",db_name="stack.db",commit=True):
+  def __init__(self,base_list=[],table_name="_stack",db_name="stack.db",commit=True):
     self._table_name=table_name
     self.connection=sqlite3.connect(db_name)
     self.cursor=self.connection.cursor()
@@ -79,9 +79,18 @@ class dblist:
           pickle BLOB
         );
       """%self._table_name)
-      self._setstack(base_stack)
+
+      #Initial contents
+      for value in base_list:
+        pickle=dumps(value)
+        self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?)' % self._table_name,[pickle])
+
       if commit:
         self.commit()
+
+
+
+
 
   def __del__(self,commit=True):
     "Delete the stack"
