@@ -54,30 +54,27 @@ class TestGetAttribute(CompareLists):
 class TestGetItem(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l[-1], l[3]
 
 class TestHash(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestIAdd(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestImul(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestInit(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestIter(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestLe(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestLen(CompareLists):
   @staticmethod
@@ -87,58 +84,62 @@ class TestLen(CompareLists):
 class TestMul(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestNe(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    return l*3
 
 class TestNew(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestReduce(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestReduceEx(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestRepr(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestReversed(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestRmul(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestSetAttr(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestSetItem(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l[5] = l[-3]
 
 class TestSetSlice(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestSizeOf(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    return l[3:5] = l[-5:-3]
 
 class TestStr(CompareLists):
   @staticmethod
   def manipulate(l):
+    return str(l)
 
 class TestSubClassHook(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestAppend(CompareLists):
   @staticmethod
@@ -163,17 +164,17 @@ class TestIndex(CompareLists):
 class TestInsert(CompareLists):
   @staticmethod
   def manipulate(l):
-    return l.insert(3, l[8])
+    return l.insert(3, "9fouear8aoeus")
 
 class TestPop(CompareLists):
   @staticmethod
   def manipulate(l):
-    return l.pop(int(len(l/2)))
+    return l.pop(9)
 
 class TestRemove(CompareLists):
   @staticmethod
   def manipulate(l):
-    return l.remove(l[-3])
+    return l.remove(24) #The value 24, not the index
 
 class TestReverse(CompareLists):
   @staticmethod
@@ -191,7 +192,17 @@ class TestEq(CompareLists):
   def manipulate(l):
     return l == l
 
+class TestNe(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
 class TestGe(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
+class TestLe(CompareLists):
   @staticmethod
   def manipulate(l):
     raise NotImplementedError("Test not yet implemented.")
@@ -202,6 +213,19 @@ class TestGt(CompareLists):
     raise NotImplementedError("Test not yet implemented.")
 
 class TestLt(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
+
+# Type casting
+class TestInit(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
+# These should not be equal between the two types.
+class TestSizeOf(CompareLists):
   @staticmethod
   def manipulate(l):
     raise NotImplementedError("Test not yet implemented.")
