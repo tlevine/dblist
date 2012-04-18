@@ -217,7 +217,6 @@ class TestLt(CompareLists):
   def manipulate(l):
     raise NotImplementedError("Test not yet implemented.")
 
-
 # Type casting
 class TestInit(CompareLists):
   @staticmethod
