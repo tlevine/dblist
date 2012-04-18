@@ -15,6 +15,7 @@ class CompareLists(unittest.TestCase):
 class TestAdd(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l + l
 
 class TestContains(CompareLists):
   @staticmethod
@@ -24,40 +25,33 @@ class TestContains(CompareLists):
 class TestDelAttr(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestDelItem(CompareLists):
   @staticmethod
   def manipulate(l):
+    del(l[int(len(l/2))])
 
 class TestDelSlice(CompareLists):
   @staticmethod
   def manipulate(l):
+    del(l[2:-2])
 
 class TestDoc(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestEq(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestFormat(CompareLists):
   @staticmethod
   def manipulate(l):
-
-class TestGe(CompareLists):
-  @staticmethod
-  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestGetAttribute(CompareLists):
   @staticmethod
   def manipulate(l):
 
 class TestGetItem(CompareLists):
-  @staticmethod
-  def manipulate(l):
-
-class TestGt(CompareLists):
   @staticmethod
   def manipulate(l):
 
@@ -89,10 +83,6 @@ class TestLen(CompareLists):
   @staticmethod
   def manipulate(l):
     return len(l)
-
-class TestLt(CompareLists):
-  @staticmethod
-  def manipulate(l):
 
 class TestMul(CompareLists):
   @staticmethod
@@ -153,6 +143,7 @@ class TestSubClassHook(CompareLists):
 class TestAppend(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.append(l[3])
 
 class TestCount(CompareLists):
   @staticmethod
@@ -162,7 +153,7 @@ class TestCount(CompareLists):
 class TestExtend(CompareLists):
   @staticmethod
   def manipulate(l):
-    l.extend(l)
+    return l.extend(l)
 
 class TestIndex(CompareLists):
   @staticmethod
@@ -172,23 +163,48 @@ class TestIndex(CompareLists):
 class TestInsert(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.insert(3, l[8])
 
 class TestPop(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.pop(int(len(l/2)))
 
 class TestRemove(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.remove(l[-3])
 
 class TestReverse(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.reverse()
 
 class TestSort(CompareLists):
   @staticmethod
   def manipulate(l):
+    return l.sort()
 
+# Comparison operators
+class TestEq(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return l == l
+
+class TestGe(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
+class TestGt(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
+
+class TestLt(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 if __name__ == '__main__':
   unittest.main()
