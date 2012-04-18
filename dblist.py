@@ -6,21 +6,14 @@ import sqlite3
 #from pickle import dumps,loads
 from json import dumps,loads
 
-#Check types
-# if type(index)!=type(42):
-#   raise TypeError('list indices must be integers, not ??')
-# if type(start)!=type(42) or type(end)!=type(42):
-#   raise TypeError('slice indices must be integers or None or have an __index__ method')
-
 class dblist:
   #List methods
-  def append(self,value,commit=True):
+  def append(self,value):
     "Add a row"
     pickle=dumps(value)
     self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?);'%self._table_name,[pickle])
-    if commit:
+    if self.auto_commit:
       self.commit()
-
 
   def count(self,value):
     self.cursor.execute('SELECT count(`pickle`) FROM `%s` WHERE `pickle`=?;'%self._table_name,[dumps(value)])
@@ -29,7 +22,7 @@ class dblist:
 
 #  def extend(self):
   def index(self,value):
-    self.cursor.execute('SELECT `pk` FROM `%s` WHERE `pickle`=? ORDER BY `pk` ASC LIMIT 1;'%self._table_name,[dumps(value)])
+    self.cursor.execute('SELECT `rowid` FROM `%s` WHERE `pickle`=? ORDER BY `rowid` ASC LIMIT 1;'%self._table_name,[dumps(value)])
     rows=self.cursor.fetchall()
     return rows[0][0]
 
@@ -37,7 +30,7 @@ class dblist:
     
   def pop(self,index=None,commit=False):
     #Get
-    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` DESC LIMIT 1'%self._table_name)
+    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `rowid` DESC LIMIT 1'%self._table_name)
     rows=self.cursor.fetchall()
     if len(rows)==0:
       raise IndexError("pop from empty list")
@@ -46,53 +39,61 @@ class dblist:
 
       #Delete
       if index==None:
-        self.cursor.execute('DELETE FROM `%s` WHERE `pk`=(SELECT max(pk) from `%s`);'%(self._table_name,self._table_name))
+        self.cursor.execute('DELETE FROM `%s` WHERE `rowid`=(SELECT max(`rowid`) from `%s`);'%(self._table_name,self._table_name))
       else:
-        self.cursor.execute('DELETE FROM `%s` WHERE `pk`=?;'%(self._table_name),[index])
+        self.cursor.execute('DELETE FROM `%s` WHERE `rowid`=?;'%(self._table_name),[index])
         
       #Commit
-      if commit:
+      if self.auto_commit:
         self.commit()
 
       return value
 
   def remove(self,value):
-    pk=self.index(value)
-    self.cursor.execute('DELETE FROM `%s` WHERE `pk`=?;'%(self._table_name),[pk])
+    rowid=self.index(value)
+    self.cursor.execute('DELETE FROM `%s` WHERE `rowid`=?;'%(self._table_name),[rowid])
 
 # def reverse(self):
 # def sort(self):
 
-  #Special list methods
-  def __init__(self,base_list=[],table_name="_dblist",db_name="dblist.db",commit=True):
-  #def __init__(self,table_name,db_name,base_list=[],commit=True):
-    self._table_name=table_name
-    self.connection=sqlite3.connect(db_name)
+  def __init__(self, base_list = [], dbname = "dblist.py", table_name = "_dblist", auto_commit = True):
+    pass
+    # Should database changes be committed automatically after each command?
+    if type(auto_commit) != bool:
+      raise TypeError("auto_commit must be True or False.")
+    else:
+      self.auto_commit = auto_commit
+
+    # Database connection
+    if type(dbname) not in [unicode, str]:
+      raise TypeError("dbname must be a string")
+    else:
+      #self.connection=sqlite3.connect(dbname, detect_types = sqlite3.PARSE_DECLTYPES)
+      self.connection=sqlite3.connect(db_name)
+      self.cursor=self.connection.cursor()
+
+    # Make sure it's a good table name
+    if type(table_name) not in [unicode, str]:
+      raise TypeError("table_name must be a string")
+    else:
+      self.__table_name = table_name
+
+
     self.cursor=self.connection.cursor()
     self.cursor.execute("SELECT name FROM sqlite_master WHERE TYPE='table'")
     table_names=[row[0] for row in self.cursor.fetchall()]
     if table_name in table_names:
-      "Check the schema"
+      self.cursor.execute("PRAGMA table_info(%s)" % table_name)
+      print self.cursor.fetchall()
+
     else:
       "Create the table and set the base stack."
-      self.cursor.execute("""
-        CREATE TABLE %s(
-          pk INTEGER PRIMARY KEY,
-          pickle BLOB
-        );
-      """%self._table_name)
+      self.cursor.execute("CREATE TABLE %s ( pickle BLOB )" % self._table_name)
 
       #Initial contents
       for value in base_list:
         pickle=dumps(value)
         self.cursor.execute('INSERT INTO `%s`(pickle) VALUES(?)' % self._table_name,[pickle])
-
-      if commit:
-        self.commit()
-
-
-
-
 
   def __del__(self,commit=True):
     "Delete the stack"
@@ -124,7 +125,7 @@ class dblist:
   def __getslice__(self,start,end):
     self.cursor.execute("""
       SELECT `pickle` FROM `%s`
-      WHERE pk >= ? AND pk < ? ASC;
+      WHERE `rowid` >= ? AND `rowid` < ? ASC;
     """%self._table_name,[index])
     rows=self.cursor.fetchall()
     return [loads(row[0]) for row in rows]
@@ -134,7 +135,7 @@ class dblist:
       pickle=dumps(value)
       self.cursor.execute("""
         INSERT INTO `%s`(pickle) VALUES(?)
-        WHERE pk >= ? AND pk < ? ASC;
+        WHERE `rowid` >= ? AND `rowid` < ? ASC;
       """ % self._table_name,[pickle,start,end])
     if commit:
       self.commit()
@@ -145,6 +146,6 @@ class dblist:
 #    self.cursor.close()
 
   def tolist(self):
-    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `pk` ASC'%self._table_name)
+    self.cursor.execute('SELECT `pickle` FROM `%s` ORDER BY `rowid` ASC'%self._table_name)
     thestack=[loads(row[0]) for row in self.cursor.fetchall()]
     return thestack
