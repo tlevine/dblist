@@ -1,69 +1,193 @@
 import unittest
 from dblist import dblist
 
-class TestDbList(unittest.TestCase):
+class CompareLists(unittest.TestCase):
   def setUp(self):
-    self.list=[3,5,1]
-    self.dblist=dblist(self.list)
-    self.dblist.commit()
+    self.list=[0,"five", {}, [{"foo": "bar"}]] + range(30)
+    self.dblist=dblist(self.list, dbname = ":memory:")
 
-  #List methods
-  def test_append(self):
-    self.list.append(8)
-    self.dblist.append(8)
-    self.assertEqual(self.list.count(5),self.dblist.count(5))
-    
-  def test_count(self):
-    self.assertEqual(self.list.count(5),self.dblist.count(5))
+  def test_manipulation(self):
+    return1 = self.manipulate(self.list)
+    return2 = self.manipulate(self.dblist)
+    self.assertEqual(return1, return2)
+    self.assertEqual(self.list, self.dblist)
 
-# def test_extend(self):
-#   foo,bar=compare(lambda baz:baz.extend([3,2]))
-#   self.assertEqual(foo,bar)
-#   del(foo)
-#   del(bar)
+class TestAdd(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-  def test_index(self):
-    self.assertEqual(self.list.index(5),self.dblist.index(5))
+class TestContains(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return [l.__contains__(item) for item in l]
 
-  def test_insert(self):
-   pass
+class TestDelAttr(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# def test_pop(self):
-#   foo,bar=compare(lambda baz:baz.pop(2),[38,5,2,3])
-#   self.assertEqual(foo,bar)
-#   foo,bar=compare(lambda baz:baz.pop(),[38,5,2,3])
-#   self.assertEqual(foo,bar)
+class TestDelItem(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# def test_remove(self):
-#   foo,bar=compare(lambda baz:baz.remove(2),[38,5,2,3])
-#   self.assertEqual(foo,bar)
+class TestDelSlice(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# def test_reverse(self):
-#   foo,bar=compare(lambda baz:baz.reverse(),[38,5,2,3])
-#   self.assertEqual(foo,bar)
+class TestDoc(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# def test_sort(self):
-#   foo,bar=compare(lambda baz:baz.sort(),[38,5,2,10,3])
-#   self.assertEqual(foo,bar)
+class TestEq(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# #Special list methods
-  def test___init__(self):
-    self.assertEqual(self.dblist.tolist(),self.list)
+class TestFormat(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# def test___del__(self):
-# def test___str__(self):
-# def test___unicode__(self):
+class TestGe(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# #Item (index) operators
-# def test___getitem__(self,index):
-#   return
-# def test___setitem__(self,index):
-#   return
-# def test___getslice__(self,index):
-#   return
+class TestGetAttribute(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
-# #Non-list methods
-# def test_commit(self): 
+class TestGetItem(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestGt(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestHash(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestIAdd(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestImul(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestInit(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestIter(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestLe(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestLen(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return len(l)
+
+class TestLt(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestMul(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestNe(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestNew(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestReduce(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestReduceEx(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestRepr(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestReversed(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestRmul(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSetAttr(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSetItem(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSetSlice(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSizeOf(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestStr(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSubClassHook(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestAppend(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestCount(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return [l.count(i) for i in l]
+
+class TestExtend(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    l.extend(l)
+
+class TestIndex(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return l.index(5) 
+
+class TestInsert(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestPop(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestRemove(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestReverse(CompareLists):
+  @staticmethod
+  def manipulate(l):
+
+class TestSort(CompareLists):
+  @staticmethod
+  def manipulate(l):
 
 
 if __name__ == '__main__':
