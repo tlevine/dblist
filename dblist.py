@@ -123,9 +123,14 @@ class dblist:
     self.__setslice__(index,index+1,[value])
 
   def __getslice__(self,start,end):
+    if start < 0 or end < 0:
+      raise ValueError('Indices cannot be negative')
+    elif start > end:
+      raise ValueError('End index must be after start index.')
     self.cursor.execute("""
       SELECT `pickle` FROM `%s`
-      WHERE `rowid` >= ? AND `rowid` < ? ASC;
+      WHERE `rowid` >= ? AND `rowid` < ? ASC
+      ORDER BY rowid;
     """%self._table_name,[index])
     rows=self.cursor.fetchall()
     return [loads(row[0]) for row in rows]
