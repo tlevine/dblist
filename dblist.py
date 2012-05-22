@@ -69,14 +69,14 @@ class dblist:
       raise TypeError("dbname must be a string")
     else:
       #self.connection=sqlite3.connect(dbname, detect_types = sqlite3.PARSE_DECLTYPES)
-      self.connection=sqlite3.connect(db_name)
+      self.connection=sqlite3.connect(dbname)
       self.cursor=self.connection.cursor()
 
     # Make sure it's a good table name
     if type(table_name) not in [unicode, str]:
       raise TypeError("table_name must be a string")
     else:
-      self.__table_name = table_name
+      self._table_name = table_name
 
 
     self.cursor=self.connection.cursor()
@@ -101,8 +101,11 @@ class dblist:
     if commit:
       self.commit()
 
-# def __str__(self):
-# def __unicode__(self):
+  def __str__(self):
+    return unicode(self.tolist())
+
+  def __unicode__(self):
+    return unicode(self.tolist())
 
 
   #Unary operators

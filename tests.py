@@ -9,8 +9,17 @@ class CompareLists(unittest.TestCase):
   def test_manipulation(self):
     return1 = self.manipulate(self.list)
     return2 = self.manipulate(self.dblist)
+
+    if isinstance(return2, dblist):
+      return2 = self.dblist.tolist()
+
     self.assertEqual(return1, return2)
-    self.assertEqual(self.list, self.dblist)
+    self.assertListEqual(self.list, self.dblist.tolist())
+
+class TestToList(CompareLists):
+  @staticmethod
+  def manipulate(l):
+    return l
 
 class TestAdd(CompareLists):
   @staticmethod
@@ -50,6 +59,7 @@ class TestFormat(CompareLists):
 class TestGetAttribute(CompareLists):
   @staticmethod
   def manipulate(l):
+    raise NotImplementedError("Test not yet implemented.")
 
 class TestGetItem(CompareLists):
   @staticmethod
@@ -124,12 +134,12 @@ class TestSetAttr(CompareLists):
 class TestSetItem(CompareLists):
   @staticmethod
   def manipulate(l):
-    return l[5] = l[-3]
+    return l[5] == l[-3]
 
 class TestSetSlice(CompareLists):
   @staticmethod
   def manipulate(l):
-    return l[3:5] = l[-5:-3]
+    return l[3:5] == l[-5:-3]
 
 class TestStr(CompareLists):
   @staticmethod
